@@ -1,0 +1,22 @@
+{
+  "author": "Derek Lu <scaret.in@gmail.com>",
+  "name": "vt100tocss",
+  "version": "0.0.1",
+  "description": "Converting VT100-formated string to plain string with css rules",
+  "keywords": [
+    "VT100",
+    "CSS",
+    "terminal",
+    "console",
+    "log"
+  ],
+  "homepage": "https://github.com/scaret/vt100tocss",
+  "bugs": "https://github.com/scaret/vt100tocss/issues",
+  "main": "./vt100tocss.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/scaret/vt100tocss.git"
+  },
+  "dependencies": {
+  }
+}

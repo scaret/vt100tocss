@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Colorful Chrome Console</title>
+</head>
+<body>
+    Open Chrome Console To See the output
+    <script src="../../vt100tocss.js"></script>
+    <script>
+        var inputs = [
+            "This is a plain Text",
+            "\033[1;31mThis line should be red",
+            "\033[0;31mThis line should be dark red",
+            "Since we share the same VT100 Console, This line should be dark red too.",
+            "\033[mThis line should be plain again",
+            "\033[41mThis line should have dark red background",
+            "\033[31mThis line's font color & background color should be the same, so you can't see it",
+            "\033[0;1;31;43mMultiple\n\nLines",
+            "\033[1;31mCo\033[1;32mlo\033[1;33mrf\033[1;34mul \033[1;35mLi\033[1;36mne"
+        ];
+        var client = new VTClient();
+        var outputs = client.parse(inputs.join("\n"));
+
+        var argv = [""];
+        for (var i = 0; i < outputs.length; i++){
+            var output = outputs[i];
+            var cssRuleStr = "";
+            for (var key in output.css)
+            {
+                cssRuleStr+=key + ":" + output.css[key] + ";";
+            }
+            argv[0] += '%c' + outputs[i].text;
+            argv.push(cssRuleStr);
+        }
+        console.log.apply(console, argv);
+
+    </script>
+</body>
+</html>
