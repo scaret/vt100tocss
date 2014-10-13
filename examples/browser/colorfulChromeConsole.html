@@ -16,7 +16,8 @@
             "\033[41mThis line should have dark red background",
             "\033[31mThis line's font color & background color should be the same, so you can't see it",
             "\033[0;1;31;43mMultiple\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\nLines",
-            "\033[1;31mCo\033[1;32mlo\033[1;33mrf\033[1;34mul \033[1;35mLi\033[1;36mne"
+            "\033[1;31mCo\033[1;32mlo\033[1;33mrf\033[1;34mul \033[1;35mLi\033[1;36mne",
+            "\033[0;4mUnderline\033[m"
         ];
         var client = new VTClient();
         var outputs = client.parse(inputs.join("\n"));
@@ -28,6 +29,7 @@
             argv.push(output.css);
         }
         console.log.apply(console, argv);
+        console.log(argv);
     </script>
 </body>
 </html>

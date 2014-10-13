@@ -17,12 +17,17 @@
         this.state = cloneObj(this.defaultState);
 	};
     VTClient.prototype.adjustment = -64;
-    VTClient.prototype.defaultState = {color:null, background: null, adjustment: false};
+    VTClient.prototype.defaultState = {color:null, background: null, bold: true};
     VTClient.prototype.rules_m =
     {
-        "" : {color: null,            background:null,                adjustment:  true  },
-        0  : {color: null,            background:null,                adjustment:  true  },
-        1  : {                                                        adjustment:  false },
+        "" : {color: null,            background:null,                bold: false, underscore: false, blink: false, revert: false, concealed: false},
+        0  : {color: null,            background:null,                bold: false                                                                  },
+        1  : {                                                        bold:  true                                                                  },
+        4  : {                                                                     underscore:  true                                               },
+        5  : {                                                                                        blink:  true                                 },
+        7  : {                                                                                                      revert:  true                  },
+        8  : {                                                                                                                     concealed:  true},
+
 
         30 : {color: [ 64,  64,  64]                                                     }, // grey
         31 : {color: [255,   0,   0]                                                     }, // red
@@ -55,9 +60,9 @@
     VTClient.prototype.toCSSRule = function (){
         var cssRules = {};
         if (this.state.color instanceof Array){
-            var r = this.state.color[0] ? this.state.color[0] + this.state.adjustment * this.adjustment : 0;
-            var g = this.state.color[1] ? this.state.color[1] + this.state.adjustment * this.adjustment : 0;
-            var b = this.state.color[2] ? this.state.color[2] + this.state.adjustment * this.adjustment : 0;
+            var r = this.state.color[0] ? this.state.color[0] + !this.state.bold * this.adjustment : 0;
+            var g = this.state.color[1] ? this.state.color[1] + !this.state.bold * this.adjustment : 0;
+            var b = this.state.color[2] ? this.state.color[2] + !this.state.bold * this.adjustment : 0;
             cssRules.color = "rgb(" + [r,g,b].join() + ")";
         }
         if (this.state.background instanceof Array){
@@ -65,6 +70,22 @@
             var g = this.state.background[1] ? this.state.background[1] + this.adjustment : 0;
             var b = this.state.background[2] ? this.state.background[2] + this.adjustment : 0;
             cssRules.background = "rgb(" + [r,g,b].join() + ")";
+        }
+        if (this.state.underscore)
+        {
+            cssRules['text-decoration'] = "underline";
+        }
+        if (this.state.blink)
+        {
+            //cssRules['text-decoration'] = "blink"; // not supported in all browsers :(
+        }
+        if (this.state.revert)
+        {
+            cssRules['-webkit-filter'] = "invert(100%)"; // not supported in chrome console
+        }
+        if (this.state.concealed)
+        {
+            cssRules['visibility'] = "hidden";  // not supported in chrome console
         }
         return cssObjToStr(cssRules);
     };

@@ -17,7 +17,7 @@ http://ascii-table.com/ansi-escape-sequences.php
 
 * __0     All attributes off__
 * __1     Bold on__
-* 4     Underscore
+* __4     Underscore__
 * 5     Blink on
 * 7     Reverse video on
 * 8     Concealed on
