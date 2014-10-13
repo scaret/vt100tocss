@@ -3,6 +3,15 @@
     {
         return JSON.parse(JSON.stringify(obj));
     };
+    var cssObjToStr = function (obj)
+    {
+        var str = "";
+        for (var key in obj)
+        {
+            str += key + ":" + obj[key] + ";";
+        }
+        return str;
+    }
 
 	var VTClient = function (){
         this.state = cloneObj(this.defaultState);
@@ -57,7 +66,7 @@
             var b = this.state.background[2] ? this.state.background[2] + this.adjustment : 0;
             cssRules.background = "rgb(" + [r,g,b].join() + ")";
         }
-        return cssRules;
+        return cssObjToStr(cssRules);
     };
 
     VTClient.prototype.parse = function (str){

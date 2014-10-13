@@ -9,9 +9,7 @@ var inputs = [
     "\033[1;31mCo\033[1;32mlo\033[1;33mrf\033[1;34mul \033[1;35mLi\033[1;36mne\033[m"
 ];
 var client = new VTClient();
-var outputs = client.parse(inputs.join("\n"));
 
-var argv = [""];
 for (var i = 0; i < inputs.length; i++){
     var output = client.parse(inputs[i]);
     console.log(inputs[i] + "\033[m");
