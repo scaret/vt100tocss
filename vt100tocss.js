@@ -19,7 +19,7 @@
         this.rememberState = true;
 	};
     VTClient.prototype.adjustment = -64;
-    VTClient.prototype.defaultState = {color:null, background: null, bold: true};
+    VTClient.prototype.defaultState = {color:null, background: null, bold: false};
     VTClient.prototype.rules_m =
     {
         "" : {color: null,            background:null,                bold: false, underscore: false, blink: false, revert: false, concealed: false},
@@ -123,7 +123,7 @@
         for (var i in arguments)
         {
             var input = arguments[i];
-            if (input instanceof String)
+            if (typeof input == "string")
             {
                 out = out.concat(this.parseString(input));
             }

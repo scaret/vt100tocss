@@ -1,7 +1,7 @@
 {
   "author": "Derek Lu <scaret.in@gmail.com>",
   "name": "vt100tocss",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Converting VT100-formated string to plain string with css rules",
   "keywords": [
     "VT100",
