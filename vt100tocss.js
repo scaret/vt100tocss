@@ -11,10 +11,12 @@
             str += key + ":" + obj[key] + ";";
         }
         return str;
-    }
+    };
 
 	var VTClient = function (){
         this.state = cloneObj(this.defaultState);
+        this.eventHandlers = [];
+        this.rememberState = true;
 	};
     VTClient.prototype.adjustment = -64;
     VTClient.prototype.defaultState = {color:null, background: null, bold: true};
@@ -46,6 +48,31 @@
         45 : {                        background: [255,   0, 255]                        }, // pink
         46 : {                        background: [  0, 255, 255]                        }, // cyan
         47 : {                        background: [255, 255, 255]                        }  // white
+    };
+
+    VTClient.prototype.on = function (event, handler)
+    {
+        this.eventHandlers.push({event: event, handler: handler});
+    };
+    VTClient.prototype.unbind = function (handler)
+    {
+        for(var i = this.eventHandlers.length - 1; i >= 0; i--)
+        {
+            if (this.eventHandlers[i].handler == handler)
+            {
+                this.eventHandlers.splice(i, 1);
+            }
+        }
+    };
+    VTClient.prototype.emit = function (msgObj)
+    {
+        for (var i in this.eventHandlers)
+        {
+            if (eventHandlers[i].event == msgObj.type || eventHandlers[i].event == "all")
+            {
+                eventHandlers[i].handler(msgObj);
+            }
+        }
     };
 
     VTClient.prototype.mergeRule = function (rule){
@@ -90,11 +117,48 @@
         return cssObjToStr(cssRules);
     };
 
-    VTClient.prototype.parse = function (str){
+    VTClient.prototype.parse = function ()
+    {
+        var out = [];
+        for (var i in arguments)
+        {
+            var input = arguments[i];
+            if (input instanceof String)
+            {
+                out = out.concat(this.parseString(input));
+            }
+            else
+            {
+                out = out.concat(this.parseObject(input));
+            }
+        }
+        return out;
+    };
+
+    VTClient.prototype.parseObject = function (obj){
+        msgObj = {
+            type: 'object',
+            obj: obj,
+            css: this.toCSSRule(),
+            state: cloneObj(this.state)
+        };
+        this.emit(msgObj);
+        return [msgObj];
+    };
+
+    VTClient.prototype.parseString = function (str){
+        var msgObj;
         var strArray = str.split('\033[');
         var out = [];
         if (strArray[0].length){
-            out.push({text: strArray[0], css: this.toCSSRule()});
+            msgObj = {
+                type: 'text',
+                text: strArray[0],
+                css: this.toCSSRule(),
+                state: cloneObj(this.state)
+            };
+            out.push(msgObj);
+            this.emit(msgObj);
         }
         for (var i = 1; i < strArray.length; i++){
             var s = strArray[i];
@@ -110,13 +174,39 @@
                 else{
                     // Unsupported cmd;
                 }
+                msgObj = {
+                    type : 'escape',
+                    cmd  : cmd,
+                    param: param,
+                    state: cloneObj(this.state)
+                };
+                this.emit(msgObj);
                 if (text.length){
-                    out.push({text: text, css: this.toCSSRule()});
+                    msgObj = {
+                        type : 'text',
+                        text : text,
+                        css  : this.toCSSRule(),
+                        state: cloneObj(this.state)
+                    };
+                    out.push(msgObj);
+                    this.emit(msgObj);
                 }
             }
             else{
-                out.push({text: '\033[' + s, css: this.toCSSRule()});
+                msgObj = {
+                    type : 'text',
+                    text : '\033[' + s,
+                    css  : this.toCSSRule(),
+                    state: cloneObj(this.state)
+                };
+                out.push(msgObj);
+                this.emit(msgObj);
             }
+        }
+
+        if (!this.rememberState)
+        {
+            this.state = cloneObj(this.defaultState);
         }
         return out;
     };
